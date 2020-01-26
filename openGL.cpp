@@ -1,6 +1,4 @@
-﻿// openGL.cpp : このファイルには 'main' 関数が含まれています。プログラム実行の開始と終了がそこで行われます。
-
-
+﻿
 // OpenGLで円の描画
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,7 +16,7 @@ void display(void)
     float x, y, r = 0.5;
     double rate;
     glClear(GL_COLOR_BUFFER_BIT); // ウィンドウの背景をglClearColor()で指定された色で塗りつぶす
-    glColor3f(1.0, 1.0, 0.0); // 描画物体に白色を設定
+    glColor3f(0.0, 0.0, 0.0); // 描画物体に白色を設定
 
     glPushMatrix();
     glRotatef(ang, 0.0, 0.0, 1.0);
@@ -67,12 +65,17 @@ void simu(void)
 
 }
 
-
+void resize(int w, int h) {
+    glViewport(0, 0, w, h); // ウィンドウ全体をビューポートにする
+    glLoadIdentity(); // 変換行列の初期化
+    // スクリーン上の表示域をビューポートの大きさに比例させる
+    glOrtho(-w / 400.0, w / 400.0, -h / 400.0, h / 400.0, -1.0, 1.0);
+}
 
 
 void init(void)
 {
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClearColor(1.0, 1.0, 1.0, 0.0);
 
     glShadeModel(GL_FLAT);
 }
@@ -91,27 +94,17 @@ void Keyboard(unsigned char key, int x, int y)
 
 int main(int argc, char* argv[])
 {
-    glutInit(&argc, argv);
+    glutInit(&argc, argv);// GLUT 及び OpenGL 環境を初期化する
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-
-    glutInitWindowPosition(250, 250);//ウィンドウの位置
+    // ディスプレーの表示モードを設定する
+    // RGB (赤緑青, 光の三原色)
+    glutInitWindowPosition(200, 200);//ウィンドウの位置
     glutInitWindowSize(500, 500);//ウィンドウのサイズ
-
     glutCreateWindow(argv[0]);
+    glutReshapeFunc(resize);
     init();
     glutKeyboardFunc(Keyboard);
     glutDisplayFunc(display); // ディスプレイコールバック関数の指定
     glutMainLoop(); // イベント待ちループ
     return 0;
 }
-
-// プログラムの実行: Ctrl + F5 または [デバッグ] > [デバッグなしで開始] メニュー
-// プログラムのデバッグ: F5 または [デバッグ] > [デバッグの開始] メニュー
-
-// 作業を開始するためのヒント: 
-//    1. ソリューション エクスプローラー ウィンドウを使用してファイルを追加/管理します 
-//   2. チーム エクスプローラー ウィンドウを使用してソース管理に接続します
-//   3. 出力ウィンドウを使用して、ビルド出力とその他のメッセージを表示します
-//   4. エラー一覧ウィンドウを使用してエラーを表示します
-//   5. [プロジェクト] > [新しい項目の追加] と移動して新しいコード ファイルを作成するか、[プロジェクト] > [既存の項目の追加] と移動して既存のコード ファイルをプロジェクトに追加します
-//   6. 後ほどこのプロジェクトを再び開く場合、[ファイル] > [開く] > [プロジェクト] と移動して .sln ファイルを選択します
