@@ -8,11 +8,13 @@
 #define PART 100 // 分割数
 
 static GLfloat ang = 0.0;
+static GLfloat width = 100.0;
+static GLfloat height = 100.0;
 
-void packman()
+void packman(double r)
 {
     int i, n = PART;
-    float x, y, r = 0.5;
+    float x, y= 0.5;
     double rate;
     glBegin(GL_POLYGON); // ポリゴンの描画
     for (i = 0; i < n; i++) {
@@ -38,11 +40,12 @@ void display(void)
     glColor3f(1.0, 0.0, 0.0); // 描画物体に白色を設定
    
     glPushMatrix();
-    glTranslatef(x, 0.0, 0.0);
-    //glRotatef(ang, 0.0, 0.0, 1.0);
+    glRotatef(ang, 0.0, 0.0, 1.0);
+    glTranslatef(1, 0.0, 0.0);
+   // glRotatef(ang, 0.0, 0.0, 1.0);
 
 
-    packman();//パックマン描画
+    packman(5);//パックマン描画
 
   //  glFlush();//まだ実行されていない命令をすべて実行
   //  glPopMatrix();
@@ -52,19 +55,20 @@ void display(void)
 void simu(void)
 {
     ang = ang + 1.0;
-    if (ang > 360.0)
-        ang = ang - 360.0;
+   
     glutPostRedisplay();
 
 }
 
-void resize(int w, int h) {
-    glViewport(0, 0, w, h); // ウィンドウ全体をビューポートにする
-    glLoadIdentity(); // 変換行列の初期化
-    // スクリーン上の表示域をビューポートの大きさに比例させる
-    glOrtho(-w / 100.0, w / 100.0, -h / 100.0, h / 100.0, -1.0, 1.0);
+void reshape(int w, int h)
+{
+    glViewport(0, 0, w, h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-width, width, -height, height, -1.0, 1.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 }
-
 
 void init(void)
 {
@@ -94,7 +98,7 @@ int main(int argc, char* argv[])
     glutInitWindowPosition(200, 100);//ウィンドウの位置
     glutInitWindowSize(500, 500);//ウィンドウのサイズ
     glutCreateWindow(argv[0]);
-    glutReshapeFunc(resize);
+    glutReshapeFunc(reshape);
     init();
     glutKeyboardFunc(Keyboard);
     glutDisplayFunc(display); // ディスプレイコールバック関数の指定
