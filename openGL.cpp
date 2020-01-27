@@ -7,7 +7,7 @@
 #define PART 100 // 分割数
 #define G 9.8//重力加速度
 #define dt 0.01//時間
-#define T 0//経過時間
+#define bound 0.5//反発係数
 
 static GLfloat ang = 0.0;
 static GLfloat widthzero = 0;
@@ -23,7 +23,6 @@ struct BBB {
     double vy;//yの速度
     double ax;//xの加速度
     double ay;//yの加速度
-
 };
 BBB ball;
 
@@ -76,13 +75,21 @@ void simu(void)
     ball.vx = ball.vx + ball.ax * dt;
     ball.vy = ball.vy + ball.ay * dt;
 
-
     //位置情報
     ball.x = ball.x + ball.vx *dt;
     ball.y = ball.y + ball.vy * dt;
-    
+
+    //衝突判定
+    if ((ball.y - ball.r) <= widthzero) {
+        ball.vy = ball.vy * -bound;
+
+        ball.y = (widthzero + ball.r);
+
+
+    }
+
     printf("X座標：%f, Y座標：%f\n",ball.x, ball.y);
-    
+    //printf("X速度：%f, Y速度：%f\n", ball.vx, ball.vy);
 
     glutPostRedisplay();
 
