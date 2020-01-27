@@ -7,19 +7,24 @@
 #define PART 100 // 分割数
 
 static GLfloat ang = 0.0;
+
+static GLfloat widthzero = 0;
+static GLfloat heightzero = 0;
 static GLfloat width = 100.0;
 static GLfloat height = 100.0;
 
-typedef struct BBB {
-    float r;
-    double ball_x;
+struct BBB {
+    double r;
+    double x;
     double y;
-}ball ;
+};
+BBB ball;
 
-void packman(int r)
+
+void packman(double r)
 {
     int i, n = PART;
-    float x, y= 0.5;
+    double x, y= 0.5;
     double rate;
     glBegin(GL_POLYGON); // ポリゴンの描画
     for (i = 0; i < n; i++) {
@@ -39,34 +44,46 @@ void packman(int r)
 
 void display(void)
 {
-    int x = 1;
 
     glClear(GL_COLOR_BUFFER_BIT); // ウィンドウの背景をglClearColor()で指定された色で塗りつぶす
+
     glColor3f(1.0, 0.0, 0.0); // 描画物体に白色を設定
    
     glPushMatrix();
  
-    glTranslatef(10, 1, 0.0);//移動
+    glTranslatef(ball.x, ball.y, 0.0);//移動
     glRotatef(ang, 0.0, 0.0, 1.0);//回転
 
-    packman(5);//パックマン描画
+    packman(ball.r);//パックマン描画
     glutSwapBuffers();//図形表記に必要
+
+    glPopMatrix();
 }
 
 void simu(void)
 {
     ang = ang + 1.0;
-   
+    ball.y = ball.y - 1.0;
+    
+    if ((ball.y + ball.r) <= width) {
+        ball.y = ball.y + 50.0;
+    }
+    /*
+    if ((ball.y + ball.r) >= width2) {
+        ball.y = ball.y - 1.0;
+    }
+    */
+
     glutPostRedisplay();
 
 }
 
-void reshape(int w, int h)
+void reshape(int w,int h)
 {
     glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(-width, width, -height, height, -1.0, 1.0);
+    glOrtho(widthzero, width, heightzero, height, -1.0, 1.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 }
@@ -81,7 +98,7 @@ void init(void)
 
 void Keyboard(unsigned char key, int x, int y)
 {
-    if (key == 'a') {
+    if (key == '\033' /* '\033' は ESC の ASCII コード */) {
         exit(0);
     }
     else if (key == 'b') {
@@ -92,7 +109,9 @@ void Keyboard(unsigned char key, int x, int y)
 
 int main(int argc, char* argv[]){
 
-
+    ball.r = 5;
+    ball.x = 50;
+    ball.y = 50;
 
     glutInit(&argc, argv);// GLUT 及び OpenGL 環境を初期化する
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
