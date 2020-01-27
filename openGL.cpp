@@ -1,5 +1,4 @@
-﻿
-// OpenGLで円の描画
+﻿// OpenGLで円の描画
 #include <stdio.h>
 #include <stdlib.h>
 #include <GL/glut.h>
@@ -11,7 +10,13 @@ static GLfloat ang = 0.0;
 static GLfloat width = 100.0;
 static GLfloat height = 100.0;
 
-void packman(double r)
+typedef struct BBB {
+    float r;
+    double ball_x;
+    double y;
+}ball ;
+
+void packman(int r)
 {
     int i, n = PART;
     float x, y= 0.5;
@@ -40,15 +45,11 @@ void display(void)
     glColor3f(1.0, 0.0, 0.0); // 描画物体に白色を設定
    
     glPushMatrix();
-    glRotatef(ang, 0.0, 0.0, 1.0);
-    glTranslatef(1, 0.0, 0.0);
-   // glRotatef(ang, 0.0, 0.0, 1.0);
-
+ 
+    glTranslatef(10, 1, 0.0);//移動
+    glRotatef(ang, 0.0, 0.0, 1.0);//回転
 
     packman(5);//パックマン描画
-
-  //  glFlush();//まだ実行されていない命令をすべて実行
-  //  glPopMatrix();
     glutSwapBuffers();//図形表記に必要
 }
 
@@ -89,8 +90,10 @@ void Keyboard(unsigned char key, int x, int y)
 }
 
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]){
+
+
+
     glutInit(&argc, argv);// GLUT 及び OpenGL 環境を初期化する
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     // ディスプレーの表示モードを設定する
