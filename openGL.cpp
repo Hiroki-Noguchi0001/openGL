@@ -5,18 +5,25 @@
 #include <math.h>
 #define M_PI 3.141592 // 円周率
 #define PART 100 // 分割数
+#define G 9.8//重力加速度
+#define dt 0.01//時間
+#define T 0//経過時間
 
 static GLfloat ang = 0.0;
-
 static GLfloat widthzero = 0;
 static GLfloat heightzero = 0;
-static GLfloat width = 100.0;
-static GLfloat height = 100.0;
+static GLfloat width = 200.0;
+static GLfloat height = 200.0;
 
 struct BBB {
-    double r;
-    double x;
-    double y;
+    double r;//円の半径
+    double x;//xの座標
+    double y;//yの座標
+    double vx;//xの速度
+    double vy;//yの速度
+    double ax;//xの加速度
+    double ay;//yの加速度
+
 };
 BBB ball;
 
@@ -52,7 +59,7 @@ void display(void)
     glPushMatrix();
  
     glTranslatef(ball.x, ball.y, 0.0);//移動
-    glRotatef(ang, 0.0, 0.0, 1.0);//回転
+    glRotatef(ang, 0, 0, 1.0);//回転
 
     packman(ball.r);//パックマン描画
     glutSwapBuffers();//図形表記に必要
@@ -62,17 +69,20 @@ void display(void)
 
 void simu(void)
 {
-    ang = ang + 1.0;
-    ball.y = ball.y - 1.0;
+    //回転情報
+    ang = ang - 0.5;
+
+    //速度情報
+    ball.vx = ball.vx + ball.ax * dt;
+    ball.vy = ball.vy + ball.ay * dt;
+
+
+    //位置情報
+    ball.x = ball.x + ball.vx *dt;
+    ball.y = ball.y + ball.vy * dt;
     
-    if ((ball.y + ball.r) <= width) {
-        ball.y = ball.y + 50.0;
-    }
-    /*
-    if ((ball.y + ball.r) >= width2) {
-        ball.y = ball.y - 1.0;
-    }
-    */
+    printf("X座標：%f, Y座標：%f\n",ball.x, ball.y);
+    
 
     glutPostRedisplay();
 
@@ -110,8 +120,12 @@ void Keyboard(unsigned char key, int x, int y)
 int main(int argc, char* argv[]){
 
     ball.r = 5;
-    ball.x = 50;
-    ball.y = 50;
+    ball.x = 100;
+    ball.y = 100;
+    ball.vx = 0;
+    ball.vy = 0;
+    ball.ax = 0;
+    ball.ay = -G;
 
     glutInit(&argc, argv);// GLUT 及び OpenGL 環境を初期化する
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
