@@ -7,7 +7,7 @@
 #define PART 100 // 分割数
 #define G 9.8//重力加速度
 #define dt 0.01//時間
-#define bound 0.5//反発係数
+#define bound 0.87//反発係数
 
 static GLfloat ang = 0.0;
 static GLfloat widthzero = 0;
@@ -53,7 +53,7 @@ void display(void)
 
     glClear(GL_COLOR_BUFFER_BIT); // ウィンドウの背景をglClearColor()で指定された色で塗りつぶす
 
-    glColor3f(1.0, 0.0, 0.0); // 描画物体に白色を設定
+    glColor3f(0.0, 0.0, 0.0); // 描画物体に白色を設定
    
     glPushMatrix();
  
@@ -126,13 +126,13 @@ void Keyboard(unsigned char key, int x, int y)
 
 int main(int argc, char* argv[]){
 
-    ball.r = 5;
-    ball.x = 100;
-    ball.y = 100;
-    ball.vx = 0;
-    ball.vy = 0;
-    ball.ax = 0;
-    ball.ay = -G;
+    ball.r = 10; //円の半径の値
+    ball.x = 100;//円のｘ軸の座標の値
+    ball.y = 100;//円のｙ軸の座標の値
+    ball.vx = 0;//ｘの成分の速度
+    ball.vy = 0;//ｙの成分の速度
+    ball.ax = 0;//ｘの加速度
+    ball.ay = -G;//ｙの加速度
 
     glutInit(&argc, argv);// GLUT 及び OpenGL 環境を初期化する
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
