@@ -9,7 +9,8 @@
 #define dt 0.01//時間
 #define bound 0.87//反発係数
 
-static GLfloat ang = 0.0;
+static GLfloat ballang = 0.0;
+static GLfloat footang = 0.0;
 static GLfloat widthzero = 0;
 static GLfloat heightzero = 0;
 static GLfloat width = 200.0;
@@ -24,26 +25,28 @@ struct BALL {
     double ax;//xの加速度
     double ay;//yの加速度
 };
-BALL ball;
+BALL ball = { 10, 100, 100, 0, 0, 0, -G };//構造体のメンバ.初期化
 
 void foot() {
+
+    //足（干渉しない部分）
     glBegin(GL_POLYGON);
-    glVertex2d(50, 100);
-    glVertex2d(50, 50);
-    glVertex2d(60, 50);
-    glVertex2d(60, 100);
+    glVertex2d(-5, 5);
+    glVertex2d(-5, -45);
+    glVertex2d(5, -45);
+    glVertex2d(5, 5);
     glEnd();
     glFlush();
 
+    //つま先（干渉する部分）
     glBegin(GL_POLYGON);
-    glVertex2d(60, 60);
-    glVertex2d(60, 50);
-    glVertex2d(70, 50);
-    glVertex2d(70, 60);
+    glVertex2d(5, -35);
+    glVertex2d(5, -45);
+    glVertex2d(15, -45);
+    glVertex2d(15, -35);
     glEnd();
     glFlush();
-
-
+    
 }
 
 
@@ -71,21 +74,22 @@ void packman(double r)
 
 void display(void)
 {
-
+    
     glClear(GL_COLOR_BUFFER_BIT); // ウィンドウの背景をglClearColor()で指定された色で塗りつぶす
     glColor3f(0.0, 0.0, 0.0); // 描画物体に白色を設定
     glPushMatrix();
     glTranslatef(ball.x, ball.y, 0.0);//移動
-    glRotatef(ang, 0, 0, 1.0);//回転
+    glRotatef(ballang, 0, 0, 1.0);//回転
     packman(ball.r);//パックマン描画
     glPopMatrix();
 
-    glColor3f(1.0, 0.0, 1.0); // 描画物体に白色を設定
+    glColor3f(0.0, 0.0, 0.0); // 描画物体に白色を設定
     glPushMatrix();
-   // glRotatef(ang, 0, 0, 1.0);//回転
+    glTranslatef(55, 95, 0);
+    glRotatef(footang, 0.0, 0.0, 1.0);//回転
     foot();
-
     glPopMatrix();
+
     glutSwapBuffers();//図形表記に必
 
 }
@@ -93,7 +97,9 @@ void display(void)
 void simu(void)
 {
     //回転情報
-    ang = ang - 0.5;
+    ballang = ballang - 0.5;
+
+    footang = footang + 0.5;
 
     //速度情報
     ball.vx = ball.vx + ball.ax * dt;
@@ -146,14 +152,6 @@ void Keyboard(unsigned char key, int x, int y)
 }
 
 int main(int argc, char* argv[]) {
-
-    ball.r = 10; //円の半径の値
-    ball.x = 100;//円のｘ軸の座標の値
-    ball.y = 100;//円のｙ軸の座標の値
-    ball.vx = 0;//ｘの成分の速度
-    ball.vy = 0;//ｙの成分の速度
-    ball.ax = 0;//ｘの加速度
-    ball.ay = -G;//ｙの加速度
 
     glutInit(&argc, argv);// GLUT 及び OpenGL 環境を初期化する
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
