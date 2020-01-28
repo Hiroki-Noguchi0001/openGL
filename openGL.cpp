@@ -28,12 +28,22 @@ BALL ball;
 
 void foot() {
     glBegin(GL_POLYGON);
-    glVertex2d(50, 150);
+    glVertex2d(50, 100);
     glVertex2d(50, 50);
-    glVertex2d(100, 50);
-    glVertex2d(100, 150);
+    glVertex2d(60, 50);
+    glVertex2d(60, 100);
     glEnd();
     glFlush();
+
+    glBegin(GL_POLYGON);
+    glVertex2d(60, 60);
+    glVertex2d(60, 50);
+    glVertex2d(70, 50);
+    glVertex2d(70, 60);
+    glEnd();
+    glFlush();
+
+
 }
 
 
@@ -70,7 +80,7 @@ void display(void)
     packman(ball.r);//パックマン描画
     glPopMatrix();
 
-    glColor3f(0.0, 0.0, 0.0); // 描画物体に白色を設定
+    glColor3f(1.0, 0.0, 1.0); // 描画物体に白色を設定
     glPushMatrix();
    // glRotatef(ang, 0, 0, 1.0);//回転
     foot();
