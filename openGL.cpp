@@ -15,7 +15,7 @@ static GLfloat heightzero = 0;
 static GLfloat width = 200.0;
 static GLfloat height = 200.0;
 
-struct BBB {
+struct BALL {
     double r;//円の半径
     double x;//xの座標
     double y;//yの座標
@@ -24,13 +24,23 @@ struct BBB {
     double ax;//xの加速度
     double ay;//yの加速度
 };
-BBB ball;
+BALL ball;
+
+void foot() {
+    glBegin(GL_POLYGON);
+    glVertex2d(50, 150);
+    glVertex2d(50, 50);
+    glVertex2d(100, 50);
+    glVertex2d(100, 150);
+    glEnd();
+    glFlush();
+}
 
 
 void packman(double r)
 {
     int i, n = PART;
-    double x, y= 0.5;
+    double x, y = 0.5;
     double rate;
     glBegin(GL_POLYGON); // ポリゴンの描画
     for (i = 0; i < n; i++) {
@@ -48,22 +58,26 @@ void packman(double r)
     glEnd(); // ポリゴンの描画終了
 }
 
+
 void display(void)
 {
 
     glClear(GL_COLOR_BUFFER_BIT); // ウィンドウの背景をglClearColor()で指定された色で塗りつぶす
-
     glColor3f(0.0, 0.0, 0.0); // 描画物体に白色を設定
-   
     glPushMatrix();
- 
     glTranslatef(ball.x, ball.y, 0.0);//移動
     glRotatef(ang, 0, 0, 1.0);//回転
-
     packman(ball.r);//パックマン描画
-    glutSwapBuffers();//図形表記に必要
+    glPopMatrix();
+
+    glColor3f(0.0, 0.0, 0.0); // 描画物体に白色を設定
+    glPushMatrix();
+   // glRotatef(ang, 0, 0, 1.0);//回転
+    foot();
 
     glPopMatrix();
+    glutSwapBuffers();//図形表記に必
+
 }
 
 void simu(void)
@@ -76,8 +90,8 @@ void simu(void)
     ball.vy = ball.vy + ball.ay * dt;
 
     //位置情報
-    ball.x = ball.x + ball.vx *dt;
-    ball.y = ball.y + ball.vy * dt;
+    ball.x = ball.x + ball.vx * dt / 2.0;
+    ball.y = ball.y + ball.vy * dt / 2.0;
 
     //衝突判定
     if ((ball.y - ball.r) <= widthzero) {
@@ -85,17 +99,16 @@ void simu(void)
 
         ball.y = (widthzero + ball.r);
 
-
     }
 
-    printf("X座標：%f, Y座標：%f\n",ball.x, ball.y);
+    printf("X座標：%f, Y座標：%f\n", ball.x, ball.y);
     //printf("X速度：%f, Y速度：%f\n", ball.vx, ball.vy);
 
     glutPostRedisplay();
 
 }
 
-void reshape(int w,int h)
+void reshape(int w, int h)
 {
     glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
@@ -112,7 +125,6 @@ void init(void)
     glShadeModel(GL_FLAT);
 }
 
-
 void Keyboard(unsigned char key, int x, int y)
 {
     if (key == '\033' /* '\033' は ESC の ASCII コード */) {
@@ -123,8 +135,7 @@ void Keyboard(unsigned char key, int x, int y)
     }
 }
 
-
-int main(int argc, char* argv[]){
+int main(int argc, char* argv[]) {
 
     ball.r = 10; //円の半径の値
     ball.x = 100;//円のｘ軸の座標の値
